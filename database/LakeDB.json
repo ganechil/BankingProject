@@ -1,0 +1,25 @@
+{
+	"name": "LakeDB",
+	"properties": {
+		"Name": "LakeDB",
+		"EntityType": "DATABASE",
+		"Origin": {
+			"Type": "SPARK"
+		},
+		"Properties": {
+			"IsSyMSCDMDatabase": true
+		},
+		"Source": {
+			"Provider": "ADLS",
+			"Location": "abfss://ctdatabronze@stacdatacompanyprod01.dfs.core.windows.net/csv",
+			"Properties": {
+				"FormatType": "csv",
+				"LinkedServiceName": "synapse-wrkspc-gc-WorkspaceDefaultStorage"
+			}
+		},
+		"PublishStatus": "PUBLISHED",
+		"ObjectVersion": 1,
+		"ObjectId": "ea8987c4-9362-44c8-a88c-29c91adc7c20"
+	},
+	"type": "DATABASE"
+}

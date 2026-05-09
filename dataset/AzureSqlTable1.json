@@ -1,0 +1,49 @@
+{
+	"name": "AzureSqlTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Country",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Company",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Month",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Sale2018",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Sale2019",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "Sale2020",
+				"type": "float",
+				"precision": 15
+			},
+			{
+				"name": "SaleDate",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "SalesData_DWH"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

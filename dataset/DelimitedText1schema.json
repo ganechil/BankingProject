@@ -1,0 +1,46 @@
+{
+	"name": "DelimitedText1schema",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1_csv",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "SalesData_Modified.csv",
+				"folderPath": "csv",
+				"container": "ctdatabronze"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Country",
+				"type": "String"
+			},
+			{
+				"name": "Company",
+				"type": "String"
+			},
+			{
+				"name": "Month",
+				"type": "String"
+			},
+			{
+				"name": "Sale2018",
+				"type": "String"
+			},
+			{
+				"name": "sale19",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
