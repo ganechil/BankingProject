@@ -639,15 +639,15 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "e048191b-dabb-4195-86ff-666dbdce9dda"
+						"spark.autotune.trackingId": "6449c441-32ff-4505-a1ac-7a95d12df3da"
 					}
 				},
 				"metadata": {
 					"saveOutput": true,
 					"enableDebugMode": false,
 					"kernelspec": {
-						"name": "synapse_sparksql",
-						"display_name": "sql"
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
 					},
 					"language_info": {
 						"name": "sql"
@@ -662,7 +662,7 @@
 							"authResource": "https://dev.azuresynapse.net"
 						},
 						"sparkVersion": "3.5",
-						"nodeCount": 10,
+						"nodeCount": 3,
 						"cores": 4,
 						"memory": 28,
 						"automaticScaleJobs": false
@@ -676,75 +676,39 @@
 							"editable": true,
 							"run_control": {
 								"frozen": false
-							}
+							},
+							"collapsed": false
 						},
 						"source": [
 							"-- Databricks notebook source\n",
-							"select * from banking_metadata_tables\n",
+							"select * from banking_metadata_tables;\n",
 							"\n",
 							"-- COMMAND ----------\n",
 							"\n",
-							"select * from banking_metadata_table_parameters\n",
+							"select * from banking_metadata_table_parameters;\n",
 							"\n",
 							"-- COMMAND ----------\n",
 							"\n",
-							"select * from banking_metadata_pipeline_runs order by start_time desc\n",
+							"select * from banking_metadata_pipeline_runs order by start_time desc;\n",
 							"\n",
 							"-- COMMAND ----------\n",
 							"\n",
-							"select * from banking_metadata_table_parameters where table_id = 4\n",
+							"select * from banking_metadata_table_parameters where table_id = 4;\n",
 							"\n",
 							"-- COMMAND ----------\n",
 							"\n",
-							"select t_table_name, table_parameters_parameter_value \n",
-							"from banking_metadata_tables t join banking_metadata_table_parameters \n",
-							"where t_table_id = table_parameters_table_id \n",
-							"and table_parameters_parameter_name='load_type'\n",
+							"select t.table_name, tp.parameter_value \n",
+							"from banking_metadata_tables t \n",
+							"join banking_metadata_table_parameters tp\n",
+							"where t.table_id = tp.table_id \n",
+							"and tp.parameter_name='load_type';\n",
 							"\n",
 							"-- COMMAND ----------\n",
 							"\n",
-							"select * from banking_metadata_table_watermarks"
+							"select * from banking_metadata_table_watermarks;"
 						],
 						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							""
-						],
-						"outputs": [],
-						"execution_count": null
-					},
-					{
-						"cell_type": "code",
-						"metadata": {
-							"jupyter": {
-								"source_hidden": false,
-								"outputs_hidden": false
-							},
-							"nteract": {
-								"transient": {
-									"deleting": false
-								}
-							}
-						},
-						"source": [
-							""
-						],
-						"outputs": [],
-						"execution_count": null
+						"execution_count": 5
 					}
 				]
 			},
@@ -812,7 +776,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "266fbe7c-de92-4c4c-8813-77f77bf1cfac"
+						"spark.autotune.trackingId": "885f04a5-4f19-4908-b500-8856034c2f45"
 					}
 				},
 				"metadata": {
@@ -835,9 +799,10 @@
 							"authResource": "https://dev.azuresynapse.net"
 						},
 						"sparkVersion": "3.5",
-						"nodeCount": 10,
+						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": false
 					},
 					"sessionKeepAliveTimeout": 30
 				},
