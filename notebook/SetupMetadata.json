@@ -1,0 +1,127 @@
+{
+	"name": "SetupMetadata",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "ApSprkPool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2",
+				"spark.autotune.trackingId": "4352ec6e-02ee-4a7d-b3a0-a9aade0bb031"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"enableDebugMode": false,
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/098ae160-379b-4c33-93c3-c749b638d510/resourceGroups/db-rg/providers/Microsoft.Synapse/workspaces/synapse-wrkspc-gc/bigDataPools/ApSprkPool",
+				"name": "ApSprkPool",
+				"type": "Spark",
+				"endpoint": "https://synapse-wrkspc-gc.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/ApSprkPool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "3.5",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"-- =====================================================\n",
+					"-- Create database for metadata\n",
+					"-- =====================================================\n",
+					"CREATE DATABASE IF NOT EXISTS banking_metadata;\n",
+					"\n",
+					"-- =====================================================\n",
+					"-- 1️⃣ metadata_tables\n",
+					"-- Static registry of logical tables\n",
+					"-- =====================================================\n",
+					"CREATE TABLE IF NOT EXISTS banking_metadata_tables (\n",
+					"    table_id            INT,\n",
+					"    table_name          STRING,\n",
+					"    source_system       STRING,        -- sqlserver / blob\n",
+					"    source_schema       STRING,        -- dbo (null for blob)\n",
+					"    source_table        STRING,        -- table name (null for blob)\n",
+					"    source_path         STRING,        -- blob path (null for sqlserver)\n",
+					"    target_layer        STRING,        -- silver/gold\n",
+					"    bronze_schema       STRING,        -- bronze\n",
+					"    silver_schema       STRING,        -- silver\n",
+					"    gold_schema         STRING,        -- gold\n",
+					"    active_flag         BOOLEAN,\n",
+					"    load_order          INT,\n",
+					"    created_at          TIMESTAMP\n",
+					")\n",
+					"USING DELTA;\n",
+					"\n",
+					"-- =====================================================\n",
+					"-- 2️⃣ metadata_table_parameters\n",
+					"-- Processing configuration (load type, PK, watermark)\n",
+					"-- =====================================================\n",
+					"CREATE TABLE IF NOT EXISTS banking_metadata_table_parameters (\n",
+					"    table_id            INT,\n",
+					"    parameter_name      STRING,        -- load_type / primary_key / watermark_column\n",
+					"    parameter_value     STRING,\n",
+					"    created_at          TIMESTAMP\n",
+					")\n",
+					"USING DELTA;\n",
+					"\n",
+					"-- =====================================================\n",
+					"-- 3️⃣ metadata_table_watermarks\n",
+					"-- Stores last successful watermark per table\n",
+					"-- =====================================================\n",
+					"CREATE TABLE IF NOT EXISTS banking_metadata_table_watermarks (\n",
+					"    table_id                INT,\n",
+					"    last_watermark_value    STRING,     -- flexible type storage\n",
+					"    last_updated_at         TIMESTAMP,\n",
+					"    last_run_id             BIGINT\n",
+					")\n",
+					"USING DELTA\n",
+					"PARTITIONED BY (table_id);\n",
+					"\n",
+					"-- =====================================================\n",
+					"-- 4️⃣ metadata_pipeline_runs\n",
+					"-- Execution audit table\n",
+					"-- =====================================================\n",
+					"CREATE TABLE IF NOT EXISTS banking_metadata_pipeline_runs (\n",
+					"    run_id              BIGINT,\n",
+					"    table_id            INT,\n",
+					"    layer               STRING,        -- Bronze / Silver / Gold\n",
+					"    start_time          TIMESTAMP,\n",
+					"    end_time            TIMESTAMP,\n",
+					"    status              STRING,        -- SUCCESS / FAILED\n",
+					"    number_of_records   BIGINT,\n",
+					"    error_message       STRING\n",
+					")\n",
+					"USING DELTA\n",
+					"PARTITIONED BY (table_id);\n",
+					""
+				],
+				"execution_count": 1
+			}
+		]
+	}
+}
