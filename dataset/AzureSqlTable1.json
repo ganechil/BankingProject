@@ -41,8 +41,8 @@
 			}
 		],
 		"typeProperties": {
-			"schema": "dbo",
-			"table": "SalesData_DWH"
+			"schema": "banking",
+			"table": "customers"
 		}
 	},
 	"type": "Microsoft.Synapse/workspaces/datasets"
