@@ -284,7 +284,7 @@
 						]
 					},
 					{
-						"name": "Copy data2",
+						"name": "Banking_Transactions",
 						"type": "Copy",
 						"dependsOn": [
 							{
@@ -345,9 +345,16 @@
 						]
 					},
 					{
-						"name": "Copy data3",
+						"name": "Banking_Payment",
 						"type": "Copy",
-						"dependsOn": [],
+						"dependsOn": [
+							{
+								"activity": "Banking_Transactions",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
 						"policy": {
 							"timeout": "0.12:00:00",
 							"retry": 0,
@@ -403,6 +410,65 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "Banking_CreditBeaure",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Banking_Payment",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "Json2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DelimitedText2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
 					}
 				],
 				"policy": {
@@ -413,7 +479,8 @@
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/datasets/AzureSqlTable1')]",
 				"[concat(variables('workspaceId'), '/datasets/DelimitedText2')]",
-				"[concat(variables('workspaceId'), '/datasets/DelimitedText3')]"
+				"[concat(variables('workspaceId'), '/datasets/DelimitedText3')]",
+				"[concat(variables('workspaceId'), '/datasets/Json2')]"
 			]
 		},
 		{
@@ -893,6 +960,52 @@
 			},
 			"dependsOn": [
 				"[concat(variables('workspaceId'), '/linkedServices/AzureDataLakeStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Json2')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "credit_bureau_reports_1.json",
+						"fileSystem": "ipbronze"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"customer_id": {
+							"type": "integer"
+						},
+						"credit_score": {
+							"type": "integer"
+						},
+						"risk_grade": {
+							"type": "string"
+						},
+						"external_active_loans": {
+							"type": "integer"
+						},
+						"external_overdue_amount": {
+							"type": "integer"
+						},
+						"bureau_pull_date": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AzureDataLakeStorage2')]"
 			]
 		},
 		{
