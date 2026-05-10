@@ -1,8 +1,8 @@
 {
-	"name": "DelimitedText2",
+	"name": "DelimitedText3",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureDataLakeStorage1",
+			"referenceName": "AzureDataLakeStorage2",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
@@ -10,7 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileSystem": "outputcntr"
+				"fileName": "payment_gateway_logs_1.csv",
+				"fileSystem": "ipbronze"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
@@ -19,27 +20,35 @@
 		},
 		"schema": [
 			{
-				"name": "Country",
+				"name": "txn_id",
 				"type": "String"
 			},
 			{
-				"name": "Company",
+				"name": "gateway_name",
 				"type": "String"
 			},
 			{
-				"name": "Month",
+				"name": "gateway_status",
 				"type": "String"
 			},
 			{
-				"name": "Sale2018",
+				"name": "response_code",
 				"type": "String"
 			},
 			{
-				"name": "Sale2019",
+				"name": "processing_time_ms",
 				"type": "String"
 			},
 			{
-				"name": "Sale2020",
+				"name": "device_type",
+				"type": "String"
+			},
+			{
+				"name": "geo_location",
+				"type": "String"
+			},
+			{
+				"name": "processed_timestamp",
 				"type": "String"
 			}
 		]
