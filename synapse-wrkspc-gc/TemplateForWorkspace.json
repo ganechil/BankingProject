@@ -66,65 +66,7 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('workspaceName'), '/NeoBank_SourceToSilver')]",
-			"type": "Microsoft.Synapse/workspaces/pipelines",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"activities": [
-					{
-						"name": "GetListOfTables",
-						"type": "SynapseNotebook",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"notebook": {
-								"referenceName": "ReadTablesList",
-								"type": "NotebookReference"
-							},
-							"snapshot": true,
-							"sparkPool": {
-								"referenceName": "ApSprkPool",
-								"type": "BigDataPoolReference"
-							},
-							"executorSize": "Small",
-							"conf": {
-								"spark.dynamicAllocation.enabled": null,
-								"spark.dynamicAllocation.minExecutors": null,
-								"spark.dynamicAllocation.maxExecutors": null
-							},
-							"driverSize": "Small",
-							"numExecutors": null,
-							"authentication": {
-								"type": "MSI"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"source_system": {
-						"type": "string",
-						"defaultValue": "sqlserver"
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('workspaceId'), '/notebooks/ReadTablesList')]",
-				"[concat(variables('workspaceId'), '/bigDataPools/ApSprkPool')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('workspaceName'), '/Pipeline 1')]",
+			"name": "[concat(parameters('workspaceName'), '/Banking')]",
 			"type": "Microsoft.Synapse/workspaces/pipelines",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -481,6 +423,64 @@
 				"[concat(variables('workspaceId'), '/datasets/DelimitedText2')]",
 				"[concat(variables('workspaceId'), '/datasets/DelimitedText3')]",
 				"[concat(variables('workspaceId'), '/datasets/Json2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/NeoBank_SourceToSilver')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "GetListOfTables",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "ReadTablesList",
+								"type": "NotebookReference"
+							},
+							"snapshot": true,
+							"sparkPool": {
+								"referenceName": "ApSprkPool",
+								"type": "BigDataPoolReference"
+							},
+							"executorSize": "Small",
+							"conf": {
+								"spark.dynamicAllocation.enabled": null,
+								"spark.dynamicAllocation.minExecutors": null,
+								"spark.dynamicAllocation.maxExecutors": null
+							},
+							"driverSize": "Small",
+							"numExecutors": null,
+							"authentication": {
+								"type": "MSI"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"source_system": {
+						"type": "string",
+						"defaultValue": "sqlserver"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/ReadTablesList')]",
+				"[concat(variables('workspaceId'), '/bigDataPools/ApSprkPool')]"
 			]
 		},
 		{
