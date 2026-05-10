@@ -42,7 +42,7 @@
 		],
 		"typeProperties": {
 			"schema": "banking",
-			"table": "customers"
+			"table": "transactions"
 		}
 	},
 	"type": "Microsoft.Synapse/workspaces/datasets"
