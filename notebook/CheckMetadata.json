@@ -17,7 +17,7 @@
 				"spark.dynamicAllocation.enabled": "false",
 				"spark.dynamicAllocation.minExecutors": "2",
 				"spark.dynamicAllocation.maxExecutors": "2",
-				"spark.autotune.trackingId": "62131bd1-da6e-4695-897a-08da911b4bfb"
+				"spark.autotune.trackingId": "4e9af520-8466-4fcb-a316-bf74b52ec974"
 			}
 		},
 		"metadata": {
@@ -40,7 +40,7 @@
 					"authResource": "https://dev.azuresynapse.net"
 				},
 				"sparkVersion": "3.5",
-				"nodeCount": 10,
+				"nodeCount": 3,
 				"cores": 4,
 				"memory": 28,
 				"automaticScaleJobs": false
@@ -54,72 +54,38 @@
 					"editable": true,
 					"run_control": {
 						"frozen": false
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"-- Databricks notebook source\n",
-					"select * from banking_metadata_tables\n",
+					"select * from banking_metadata_tables;\n",
 					"\n",
 					"-- COMMAND ----------\n",
 					"\n",
-					"select * from banking_metadata_table_parameters\n",
+					"select * from banking_metadata_table_parameters;\n",
 					"\n",
 					"-- COMMAND ----------\n",
 					"\n",
-					"select * from banking_metadata_pipeline_runs order by start_time desc\n",
+					"select * from banking_metadata_pipeline_runs order by start_time desc;\n",
 					"\n",
 					"-- COMMAND ----------\n",
 					"\n",
-					"select * from banking_metadata_table_parameters where table_id = 4\n",
+					"select * from banking_metadata_table_parameters where table_id = 4;\n",
 					"\n",
 					"-- COMMAND ----------\n",
 					"\n",
-					"select t_table_name, table_parameters_parameter_value \n",
-					"from banking_metadata_tables t join banking_metadata_table_parameters \n",
-					"where t_table_id = table_parameters_table_id \n",
-					"and table_parameters_parameter_name='load_type'\n",
+					"select t.table_name, tp.parameter_value \n",
+					"from banking_metadata_tables t \n",
+					"join banking_metadata_table_parameters tp\n",
+					"where t.table_id = tp.table_id \n",
+					"and tp.parameter_name='load_type';\n",
 					"\n",
 					"-- COMMAND ----------\n",
 					"\n",
-					"select * from banking_metadata_table_watermarks"
+					"select * from banking_metadata_table_watermarks;"
 				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
-			},
-			{
-				"cell_type": "code",
-				"metadata": {
-					"jupyter": {
-						"source_hidden": false,
-						"outputs_hidden": false
-					},
-					"nteract": {
-						"transient": {
-							"deleting": false
-						}
-					}
-				},
-				"source": [
-					""
-				],
-				"execution_count": null
+				"execution_count": 5
 			}
 		]
 	}
