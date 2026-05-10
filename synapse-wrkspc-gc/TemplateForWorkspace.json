@@ -639,7 +639,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "6449c441-32ff-4505-a1ac-7a95d12df3da"
+						"spark.autotune.trackingId": "252ead22-4101-4a74-9fa3-a9e07d69f5c6"
 					}
 				},
 				"metadata": {
@@ -708,7 +708,7 @@
 							"select * from banking_metadata_table_watermarks;"
 						],
 						"outputs": [],
-						"execution_count": 5
+						"execution_count": 6
 					}
 				]
 			},
@@ -776,7 +776,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "885f04a5-4f19-4908-b500-8856034c2f45"
+						"spark.autotune.trackingId": "d632e277-8c70-401d-97d0-e86fd0b4240c"
 					}
 				},
 				"metadata": {
@@ -801,8 +801,7 @@
 						"sparkVersion": "3.5",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -1316,11 +1315,11 @@
 					"delayInMinutes": 15
 				},
 				"autoScale": {
-					"enabled": true,
+					"enabled": false,
 					"maxNodeCount": 10,
 					"minNodeCount": 3
 				},
-				"nodeCount": 10,
+				"nodeCount": 3,
 				"nodeSize": "Small",
 				"nodeSizeFamily": "MemoryOptimized",
 				"sparkVersion": "3.5",
