@@ -619,7 +619,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Notebook 1')]",
+			"name": "[concat(parameters('workspaceName'), '/CheckMetadata')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
 			"properties": {
@@ -639,18 +639,18 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "1f8d5837-9ff1-4ce4-83f9-8183bcf2e884"
+						"spark.autotune.trackingId": "e048191b-dabb-4195-86ff-666dbdce9dda"
 					}
 				},
 				"metadata": {
 					"saveOutput": true,
 					"enableDebugMode": false,
 					"kernelspec": {
-						"name": "synapse_pyspark",
-						"display_name": "Synapse PySpark"
+						"name": "synapse_sparksql",
+						"display_name": "sql"
 					},
 					"language_info": {
-						"name": "python"
+						"name": "sql"
 					},
 					"a365ComputeOptions": {
 						"id": "/subscriptions/098ae160-379b-4c33-93c3-c749b638d510/resourceGroups/db-rg/providers/Microsoft.Synapse/workspaces/synapse-wrkspc-gc/bigDataPools/ApSprkPool",
@@ -664,7 +664,8 @@
 						"sparkVersion": "3.5",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28
+						"memory": 28,
+						"automaticScaleJobs": false
 					},
 					"sessionKeepAliveTimeout": 30
 				},
@@ -672,13 +673,75 @@
 					{
 						"cell_type": "code",
 						"metadata": {
-							"microsoft": {
-								"language": "python"
+							"editable": true,
+							"run_control": {
+								"frozen": false
 							}
 						},
 						"source": [
-							"%%pyspark\n",
-							"spark.sql(\"DROP DATABASE IF EXISTS default CASCADE\")"
+							"-- Databricks notebook source\n",
+							"select * from banking_metadata_tables\n",
+							"\n",
+							"-- COMMAND ----------\n",
+							"\n",
+							"select * from banking_metadata_table_parameters\n",
+							"\n",
+							"-- COMMAND ----------\n",
+							"\n",
+							"select * from banking_metadata_pipeline_runs order by start_time desc\n",
+							"\n",
+							"-- COMMAND ----------\n",
+							"\n",
+							"select * from banking_metadata_table_parameters where table_id = 4\n",
+							"\n",
+							"-- COMMAND ----------\n",
+							"\n",
+							"select t_table_name, table_parameters_parameter_value \n",
+							"from banking_metadata_tables t join banking_metadata_table_parameters \n",
+							"where t_table_id = table_parameters_table_id \n",
+							"and table_parameters_parameter_name='load_type'\n",
+							"\n",
+							"-- COMMAND ----------\n",
+							"\n",
+							"select * from banking_metadata_table_watermarks"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							""
 						],
 						"outputs": [],
 						"execution_count": null
@@ -729,76 +792,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('workspaceName'), '/Notebook 2')]",
-			"type": "Microsoft.Synapse/workspaces/notebooks",
-			"apiVersion": "2019-06-01-preview",
-			"properties": {
-				"nbformat": 4,
-				"nbformat_minor": 2,
-				"bigDataPool": {
-					"referenceName": "ApSprkPool",
-					"type": "BigDataPoolReference"
-				},
-				"sessionProperties": {
-					"driverMemory": "28g",
-					"driverCores": 4,
-					"executorMemory": "28g",
-					"executorCores": 4,
-					"numExecutors": 2,
-					"conf": {
-						"spark.dynamicAllocation.enabled": "false",
-						"spark.dynamicAllocation.minExecutors": "2",
-						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "74d0880b-0f07-471f-948c-0ad5fd963945"
-					}
-				},
-				"metadata": {
-					"saveOutput": true,
-					"enableDebugMode": false,
-					"kernelspec": {
-						"name": "synapse_pyspark",
-						"display_name": "Synapse PySpark"
-					},
-					"language_info": {
-						"name": "python"
-					},
-					"a365ComputeOptions": {
-						"id": "/subscriptions/098ae160-379b-4c33-93c3-c749b638d510/resourceGroups/db-rg/providers/Microsoft.Synapse/workspaces/synapse-wrkspc-gc/bigDataPools/ApSprkPool",
-						"name": "ApSprkPool",
-						"type": "Spark",
-						"endpoint": "https://synapse-wrkspc-gc.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/ApSprkPool",
-						"auth": {
-							"type": "AAD",
-							"authResource": "https://dev.azuresynapse.net"
-						},
-						"sparkVersion": "3.5",
-						"nodeCount": 10,
-						"cores": 4,
-						"memory": 28
-					},
-					"sessionKeepAliveTimeout": 30
-				},
-				"cells": [
-					{
-						"cell_type": "code",
-						"metadata": {
-							"microsoft": {
-								"language": "python"
-							}
-						},
-						"source": [
-							"%%pyspark\n",
-							"df = spark.sql(\"SELECT * FROM `banking_metadata`.`banking_metadata_pipeline_runs`\")\n",
-							"# df.show(10)"
-						],
-						"outputs": [],
-						"execution_count": null
-					}
-				]
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('workspaceName'), '/SetupMetadata')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -819,7 +812,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "98ebc34e-3797-430c-82db-a6354fde960b"
+						"spark.autotune.trackingId": "266fbe7c-de92-4c4c-8813-77f77bf1cfac"
 					}
 				},
 				"metadata": {
@@ -844,8 +837,7 @@
 						"sparkVersion": "3.5",
 						"nodeCount": 10,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
