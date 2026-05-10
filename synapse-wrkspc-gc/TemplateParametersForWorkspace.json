@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "synapse-wrkspc-gc"
+		},
+		"AzureBlobStorage1_csv_connectionString": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_csv_accountKey": {
+			"value": ""
+		},
+		"AzureSqlDatabase1_password": {
+			"value": ""
+		},
+		"synapse-wrkspc-gc-WorkspaceDefaultSqlServer_connectionString": {
+			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:synapse-wrkspc-gc.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://stacdatacompanyprod01.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage1_csv_properties_typeProperties_url": {
+			"value": "https://stacdatacompanyprod01.dfs.core.windows.net/"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_server": {
+			"value": "azsqlpaasetldbsrvr.database.windows.net"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_database": {
+			"value": "etldb"
+		},
+		"AzureSqlDatabase1_properties_typeProperties_userName": {
+			"value": "etladmin"
+		},
+		"synapse-wrkspc-gc-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"value": "https://stacdatacompanyprod01.dfs.core.windows.net"
+		}
+	}
+}
