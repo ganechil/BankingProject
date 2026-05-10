@@ -1,0 +1,41 @@
+{
+	"name": "Json2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "credit_bureau_reports_1.json",
+				"fileSystem": "ipbronze"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"customer_id": {
+					"type": "integer"
+				},
+				"credit_score": {
+					"type": "integer"
+				},
+				"risk_grade": {
+					"type": "string"
+				},
+				"external_active_loans": {
+					"type": "integer"
+				},
+				"external_overdue_amount": {
+					"type": "integer"
+				},
+				"bureau_pull_date": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
