@@ -755,6 +755,162 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/ReadTablesList')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "ApSprkPool",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "fd5ea28d-712c-489c-a130-0c2db930874f"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/098ae160-379b-4c33-93c3-c749b638d510/resourceGroups/db-rg/providers/Microsoft.Synapse/workspaces/synapse-wrkspc-gc/bigDataPools/ApSprkPool",
+						"name": "ApSprkPool",
+						"type": "Spark",
+						"endpoint": "https://synapse-wrkspc-gc.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/ApSprkPool",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.5",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"# COMMAND ----------\n",
+							"\n",
+							"# Define a default parameter\n",
+							"source_system = \"sqlserver\"   # default value\n",
+							"\n",
+							"# If running from Synapse pipeline, override with pipeline parameter\n",
+							"try:\n",
+							"    source_system = mssparkutils.env.getJobParameter(\"source_system\")\n",
+							"except:\n",
+							"    pass\n",
+							"\n",
+							"print(f\"Source System Passed: {source_system}\")\n",
+							"\n",
+							"if not source_system:\n",
+							"    raise ValueError(\"source_system parameter cannot be empty\")\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 2
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"collapsed": false
+						},
+						"source": [
+							"# ==========================================\n",
+							"# 2️⃣ Read Metadata Tables\n",
+							"# ==========================================\n",
+							"\n",
+							"tables_df = spark.table(\"banking_metadata_tables\")\n",
+							"\n",
+							"filtered_df = (\n",
+							"    tables_df\n",
+							"    .filter(f\"active_flag = true AND lower(source_system) = lower('{source_system}')\")\n",
+							"    .orderBy(\"load_order\")\n",
+							")\n",
+							"\n",
+							"display(filtered_df)"
+						],
+						"outputs": [],
+						"execution_count": 4
+					},
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"\n",
+							"\n",
+							"\n",
+							"\n",
+							"\n",
+							"# ==========================================\n",
+							"# 3️⃣ Convert to List of Dictionaries\n",
+							"# ==========================================\n",
+							"\n",
+							"rows = filtered_df.collect()\n",
+							"\n",
+							"tables_list = [\n",
+							"    {\n",
+							"        \"table_id\": str(row.table_id) if row.table_id is not None else \"\",\n",
+							"        \"table_name\": str(row.table_name) if row.table_name is not None else \"\",\n",
+							"        \"source_system\": str(row.source_system) if row.source_system is not None else \"\",\n",
+							"        \"source_schema\": str(row.source_schema) if row.source_schema is not None else \"\",\n",
+							"        \"source_table\": str(row.source_table) if row.source_table is not None else \"\",\n",
+							"        \"source_path\": str(row.source_path) if row.source_path is not None else \"\",\n",
+							"        \"target_layer\": str(row.target_layer) if row.target_layer is not None else \"\",\n",
+							"        \"bronze_schema\": str(row.bronze_schema) if row.bronze_schema is not None else \"\",\n",
+							"        \"silver_schema\": str(row.silver_schema) if row.silver_schema is not None else \"\",\n",
+							"        \"gold_schema\": str(row.gold_schema) if row.gold_schema is not None else \"\",\n",
+							"        \"active_flag\": str(row.active_flag) if row.active_flag is not None else \"\",\n",
+							"        \"load_order\": str(row.load_order) if row.load_order is not None else \"\",\n",
+							"        \"created_at\": str(row.created_at) if row.created_at is not None else \"\"\n",
+							"    }\n",
+							"    for row in rows\n",
+							"]\n",
+							"\n",
+							"print(\"Tables to Process (Full Metadata):\")\n",
+							"print(tables_list)\n",
+							"\n",
+							"\n",
+							"# ==========================================\n",
+							"# 4️⃣ Set Databricks Task Value\n",
+							"# ==========================================\n",
+							"\n",
+							"dbutils.jobs.taskValues.set(\n",
+							"    key=\"tables_metadata\",\n",
+							"    value=tables_list\n",
+							")\n",
+							"\n",
+							"print(\"Task value 'tables_metadata' has been set.\")\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/SetupMetadata')]",
 			"type": "Microsoft.Synapse/workspaces/notebooks",
 			"apiVersion": "2019-06-01-preview",
@@ -1118,7 +1274,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "b35f180c-4bc0-482f-b147-d1f69202e50f"
+						"spark.autotune.trackingId": "d324cd9c-210f-4acf-9f63-7218b44d3e07"
 					}
 				},
 				"metadata": {
@@ -1143,15 +1299,13 @@
 						"sparkVersion": "3.5",
 						"nodeCount": 3,
 						"cores": 4,
-						"memory": 28,
-						"automaticScaleJobs": false
+						"memory": 28
 					},
 					"sessionKeepAliveTimeout": 30
 				},
 				"cells": [
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# Databricks notebook source\n",
 							"# =====================================================\n",
@@ -1178,7 +1332,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"# COMMAND ----------\n",
 							"\n",
@@ -1209,7 +1362,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"\n",
 							"# COMMAND ----------\n",
@@ -1243,7 +1395,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"\n",
 							"\n",
@@ -1285,7 +1436,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"\n",
 							"\n",
@@ -1336,7 +1486,6 @@
 					},
 					{
 						"cell_type": "code",
-						"metadata": {},
 						"source": [
 							"\n",
 							"\n",
