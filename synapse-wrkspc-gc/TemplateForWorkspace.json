@@ -775,7 +775,7 @@
 						"spark.dynamicAllocation.enabled": "false",
 						"spark.dynamicAllocation.minExecutors": "2",
 						"spark.dynamicAllocation.maxExecutors": "2",
-						"spark.autotune.trackingId": "fd5ea28d-712c-489c-a130-0c2db930874f"
+						"spark.autotune.trackingId": "f8c5355c-f1ee-49ce-b7bf-7415905abc10"
 					}
 				},
 				"metadata": {
@@ -828,7 +828,7 @@
 							""
 						],
 						"outputs": [],
-						"execution_count": 2
+						"execution_count": 4
 					},
 					{
 						"cell_type": "code",
@@ -851,17 +851,12 @@
 							"display(filtered_df)"
 						],
 						"outputs": [],
-						"execution_count": 4
+						"execution_count": 5
 					},
 					{
 						"cell_type": "code",
 						"metadata": {},
 						"source": [
-							"\n",
-							"\n",
-							"\n",
-							"\n",
-							"\n",
 							"# ==========================================\n",
 							"# 3️⃣ Convert to List of Dictionaries\n",
 							"# ==========================================\n",
@@ -889,22 +884,55 @@
 							"\n",
 							"print(\"Tables to Process (Full Metadata):\")\n",
 							"print(tables_list)\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 7
+					},
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
 							"\n",
 							"\n",
 							"# ==========================================\n",
 							"# 4️⃣ Set Databricks Task Value\n",
 							"# ==========================================\n",
 							"\n",
-							"dbutils.jobs.taskValues.set(\n",
-							"    key=\"tables_metadata\",\n",
-							"    value=tables_list\n",
-							")\n",
+							"#dbutils.jobs.taskValues.set(\n",
+							"#    key=\"tables_metadata\",\n",
+							"#    value=tables_list\n",
+							"#)\n",
 							"\n",
-							"print(\"Task value 'tables_metadata' has been set.\")\n",
+							"#print(\"Task value 'tables_metadata' has been set.\")\n",
+							"\n",
+							"import json\n",
+							"\n",
+							"# Convert your tables_list to JSON\n",
+							"tables_json = json.dumps(tables_list)\n",
+							"\n",
+							"# Exit notebook with JSON output\n",
+							"mssparkutils.notebook.exit(tables_json)\n",
+							"\n",
 							""
 						],
 						"outputs": [],
-						"execution_count": null
+						"execution_count": 9
+					},
+					{
+						"cell_type": "code",
+						"metadata": {},
+						"source": [
+							"\n",
+							"#2. Capture output in a Synapse pipeline\n",
+							"#3. Alternative: Persist metadata\n",
+							"\n",
+							"\n",
+							"spark.createDataFrame(tables_list).write.mode(\"overwrite\").format(\"delta\").saveAsTable(\"banking_metadata_runtime\")\n",
+							""
+						],
+						"outputs": [],
+						"execution_count": 10
 					}
 				]
 			},
