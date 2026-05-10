@@ -715,7 +715,7 @@
 				],
 				"typeProperties": {
 					"schema": "banking",
-					"table": "transactions"
+					"table": "customers"
 				}
 			},
 			"dependsOn": [
